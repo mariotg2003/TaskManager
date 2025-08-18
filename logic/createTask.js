@@ -1,3 +1,5 @@
+import { Modal, createModal } from "./modal.js";
+
 export let tareas = {};
 let contadorTarea = 0;
 
@@ -5,6 +7,10 @@ export function crearTextoTarea(tarea) {
   let p = document.createElement("p");
   p.innerHTML = tarea.texto;
   p.className = "col-7";
+  p.style.textAlign = "center";
+  p.style.fontSize = "1.2em";
+  p.style.fontWeight = "bold";
+  p.style.marginTop = "0.8em";
 
   return p;
 }
@@ -12,14 +18,17 @@ export function crearTextoTarea(tarea) {
 export function crearEstimacion(tarea) {
   let divEstimacion = document.createElement("div");
   divEstimacion.innerHTML = tarea.estimacion;
-  divEstimacion.className = "col-3";
+  divEstimacion.className = "col-2";
+  divEstimacion.style.textAlign = "center";
+  divEstimacion.style.marginTop = "0.8em";
+  divEstimacion.style.fontSize = "1.2em";
 
   return divEstimacion;
 }
 
 export function crearBotonBorrar(tarea) {
   let botonBorrar = document.createElement("button");
-  botonBorrar.className = "btn btn-secondary col-2 botonBorrar";
+  botonBorrar.className = "btn btn-secondary col-3 botonBorrar";
   botonBorrar.innerHTML = "Borrar Tarea";
 
   botonBorrar.addEventListener("click", () => {
@@ -47,7 +56,7 @@ export function crearTareaArea() {
 }
 
 export function añadirTarea(tareaNueva) {
-  let divTareas = document.getElementById("contenedorTareas");
+  let divTareas = document.getElementById("tareasNoEmpezadas");
 
   let tarea = {};
 
@@ -68,6 +77,9 @@ export function añadirTarea(tareaNueva) {
   divTarea.appendChild(divTextos);
 
   divTarea.id = tarea.id;
+  divTarea.addEventListener("click", () => {
+    createModal(tarea.texto, `Estimación: ${tarea.estimacion}`);
+  });
 
   divTareas.append(divTarea);
 }
