@@ -1,14 +1,4 @@
-import {
-  crearTextoTarea,
-  crearEstimacion,
-  crearBotonBorrar,
-  crearDivTexto,
-  crearTareaArea,
-  añadirTarea,
-  guardarTarea,
-  tareas,
-  exportarJSON,
-} from "./createTask.js";
+import { Task, guardarTarea, tareas, exportarJSON } from "./clases/Task.js";
 
 function crearTarea() {
   let boton = document.getElementById("botonCrearTarea");
