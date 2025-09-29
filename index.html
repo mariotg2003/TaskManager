@@ -11,48 +11,65 @@
     <title>TaskManager</title>
   </head>
   <body>
-    <div id="formularioTarea">
-      <div class="form-group row col-6">
-        <div class="col-6">
-          <label for="nombreTarea">Tarea</label>
-          <input
-            type="text"
-            class="form-control"
-            name="nombreTarea"
-            id="nombreTarea"
-            placeholder="Escribe la tarea"
-          />
-        </div>
+    <div class="row" id="header">
+      <div class="col-12 col-md-6 col-lg-6" id="formularioTarea">
+        <div class="form-group row col-6">
+          <div class="col-6">
+            <label for="nombreTarea">Tarea</label>
+            <input
+              type="text"
+              class="form-control"
+              name="nombreTarea"
+              id="nombreTarea"
+              placeholder="Escribe la tarea"
+            />
+          </div>
 
-        <div class="col-6">
-          <label for="estimacionTarea">Estimación</label>
-          <input
-            type="number"
-            class="form-control"
-            name="estimacionTarea"
-            id="estimacionTarea"
-            placeholder="Horas estimadas"
-          />
+          <div class="col-6">
+            <label for="estimacionTarea">Estimación</label>
+            <input
+              type="number"
+              class="form-control"
+              name="estimacionTarea"
+              id="estimacionTarea"
+              placeholder="Horas estimadas"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-5 col-lg-5" id="contenedorBotones">
+        <div class="btn btn-primary me-2 botonAccion" id="botonCrearTarea">
+          Añadir Tarea
+        </div>
+        <div class="btn btn-primary me-2 botonAccion" id="botonGuardarTarea">
+          Guardar Tareas
+        </div>
+        <div class="btn btn-primary me-2 botonAccion" id="botonExportarTarea">
+          Cargar Tareas
         </div>
       </div>
     </div>
 
-    <div class="container col-12" id="contenedorBotones">
-      <div class="btn btn-primary col-4 me-2 botonAccion" id="botonCrearTarea">
-        CREAR TAREA
+    <div class="row" id="contenedorTareas">
+      <div class="col-3 contenedor">
+        <h2>READY</h2>
+        <div class="tablon" id="tareasNoEmpezadas"></div>
       </div>
-      <div class="btn btn-primary col-4 botonAccion" id="botonGuardarTarea">
-        EXPORTAR TAREAS
-      </div>
-    </div>
 
-    <div class="row col-12" id="contenedorTareas">
-      <div class="container tablon" id="tareasNoEmpezadas">
-        TAREAS SIN EMPEZAR
+      <div class="col-3 contenedor">
+        <h2>DEV</h2>
+        <div class="tablon" id="tareasDesarrollo"></div>
       </div>
-      <div class="container tablon">En Desarrollo</div>
-      <div class="container tablon">Pruebas</div>
-      <div class="container tablon">Finalizadas</div>
+
+      <div class="col-3 contenedor">
+        <h2>TEST</h2>
+        <div class="tablon" id="tareasTesting"></div>
+      </div>
+
+      <div class="col-3 contenedor">
+        <h2>DONE</h2>
+        <div class="tablon" id="tareasDone"></div>
+      </div>
     </div>
 
     <script type="module" src="logic/app.js"></script>

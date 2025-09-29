@@ -3,6 +3,7 @@ import { Modal, createModal } from "./Modal.js";
 //CLASE TASK PARA CREAR LAS TAREAS
 export class Task {
   static contadorTarea = 0;
+  static botonPulsado = false;
 
   constructor(texto = "", estimacion = 0) {
     this.texto = texto;
@@ -39,6 +40,7 @@ export class Task {
     botonBorrar.innerHTML = "Borrar Tarea";
 
     botonBorrar.addEventListener("click", () => {
+      this.botonPulsado = true;
       if (confirm("¿Quieres borrar esta tarea?")) {
         delete tareas[this.id];
         document.getElementById(this.id).remove();
@@ -57,7 +59,7 @@ export class Task {
 
   crearTareaArea() {
     let divTarea = document.createElement("div");
-    divTarea.className = "tarea";
+    divTarea.className = "tarea col-10";
 
     return divTarea;
   }
@@ -84,6 +86,20 @@ export function añadirTarea(tareaNueva) {
   divTarea.appendChild(divTextos);
 
   divTarea.id = tarea.id;
+  console.log(divTarea.id, " este es el id de la tarea");
+  divTarea.addEventListener("click", () => {
+    if (tarea.botonPulsado) {
+      tarea.botonPulsado = false;
+      return;
+    } else {
+      createModal(
+        tarea.texto,
+        `Estimación: ${tarea.estimacion} horas`,
+        tarea.id,
+        tareas
+      );
+    }
+  });
 
   divTareas.append(divTarea);
 }
