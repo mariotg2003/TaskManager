@@ -1,4 +1,10 @@
-import { Task, guardarTarea, tareas, exportarJSON } from "./clases/Task.js";
+import {
+  Task,
+  guardarTarea,
+  tareas,
+  exportarJSON,
+  abrirSelectorArchivo,
+} from "./clases/Task.js";
 
 function crearTarea() {
   let boton = document.getElementById("botonCrearTarea");
@@ -19,6 +25,7 @@ function descargarJSON() {
 function renderizar() {
   crearTarea();
   descargarJSON();
+  abrirSelectorArchivo(tareas);
 }
 
 renderizar();
