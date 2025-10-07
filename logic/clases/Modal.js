@@ -1,87 +1,105 @@
+import { añadirTarea, borrarTarea } from "./Task.js";
 export class Modal {
   constructor(
-    title = "Título del Modal",
-    content = "Contenido de la tarea",
-    elementId = null,
+    titulo = "Título del Modal",
+    contenido = "Contenido de la tarea",
+    tareaId = null,
     tareas,
-    id
+    estado = "Ready"
   ) {
-    this.title = title;
-    this.content = content;
-    this.elementId = elementId;
+    this.titulo = titulo;
+    this.contenido = contenido;
+    this.tareaId = tareaId;
     this.tareas = tareas;
-    this.id = id;
+    this.estado = estado;
   }
 
-  changeButtonText(newText) {
-    console.log("Cambiando texto del botón a:", newText);
-    this.buttonText = newText;
+  limpiarTarea(tareaId) {
+    let tablonTareaAntiguo = document.getElementById(tareaId).parentElement;
+    tablonTareaAntiguo.removeChild(document.getElementById(tareaId));
   }
 
-  cerrar() {
-    const modalElement = document.getElementById(this.id);
-    if (modalElement) {
-      modalElement.remove();
+  moverTarea(tareaId) {
+    let tarea = this.tareas[tareaId];
+    console.log(tarea);
+    console.log(tarea.estado);
+    switch (tarea.estado) {
+      case "Ready":
+        tarea.estado = "Dev";
+        break;
+      case "Dev":
+        tarea.estado = "Test";
+        break;
+      case "Test":
+        tarea.estado = "Done";
+        break;
+      case "Done":
+        tarea.estado = "Done";
+        break;
+      default:
+        tarea.estado = "Done";
+        break;
     }
+    this.tareas[tareaId] = tarea;
+    this.limpiarTarea(tareaId);
+    añadirTarea(tarea);
   }
 
-  delete(myModal, elementId) {
-    const elementoBorrar = document.getElementById(this.elementId);
-    const botonBorrar = document.getElementById("botonBorrar");
-    botonBorrar.onclick = () => {
-      if (confirm("¿Quieres borrar esta tarea?")) {
-        elementoBorrar.remove();
-        myModal.hide();
-        delete this.tareas[this.elementId];
-      }
-    };
-  }
-
-  changeToDevelopment(myModal, elementId) {
-    const changeToDev = document.getElementById("botonDesarrollo");
-    const divDesarrollo = document.getElementById("tareasDesarrollo");
-    changeToDev.addEventListener("click", () => {
-      myModal.hide();
-      changeToDev.textContent = "Tarea en desarrollo";
-      divDesarrollo.appendChild(document.getElementById(elementId));
-    });
+  borrarTareaModal(tareaId) {
+    borrarTarea(this.tareas[tareaId]);
   }
 
   open() {
-    const modalId = `modal-${this.elementId}`;
+    const tarea = this.tareas[this.tareaId];
+    console.log(tarea);
+    let estadoVisible = true;
+    if (tarea.estado === "Done") {
+      estadoVisible = false;
+    }
 
-    // Crear el contenedor
-    const modalHtml = `
-      <div class="modal fade" id=${modalId} tabindex="-1" aria-labelledby="myModalLabel">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="myModalLabel">${this.title}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" onclick=${this.cerrar()}></button>
-            </div>
-            <div class="modal-body">${this.content}</div>
-            <div class="modal-footer">
-              <button id="botonBorrar" type="button" class="btn btn-primary">Borrar tarea</button>
-              <button type="button" class="btn btn-primary">Reestimar</button>
-              <button id="botonDesarrollo" type="button" class="btn btn-primary">Pasar a desarrollo</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
+    const modal = new tingle.modal({
+      footer: true,
+      stickyFooter: false,
+      closeMethods: ["overlay", "button", "escape"],
+      closeLabel: "Cerrar",
+      cssClass: ["custom-class-1", "custom-class-2"],
 
-    // Insertar el modal en el body
-    document.body.insertAdjacentHTML("beforeend", modalHtml);
+      beforeClose: function () {
+        return true;
+      },
+    });
 
-    // Inicializar y mostrar el modal con Bootstrap
-    const myModal = new bootstrap.Modal(document.getElementById(modalId));
-    myModal.show();
-    this.changeToDevelopment(myModal, this.elementId);
-    this.delete(myModal, this.elementId);
+    modal.setContent(`
+      <h1>${this.titulo}</h1>
+      <p>${this.contenido}</p>
+    `);
+
+    if (estadoVisible) {
+      console.log(this.estadoVisible);
+      modal.addFooterBtn(
+        "Avanzar estado",
+        "tingle-btn tingle-btn--primary",
+        () => {
+          this.moverTarea(this.tareaId);
+          modal.close();
+        }
+      );
+    }
+    modal.addFooterBtn("Borrar tarea", "tingle-btn tingle-btn--primary", () => {
+      if (confirm("¿Estás seguro de que quieres borrar la tarea?")) {
+        this.borrarTareaModal(this.tareaId);
+        modal.close();
+      }
+    });
+    modal.addFooterBtn("Cerrar", "tingle-btn tingle-btn--default", () => {
+      modal.close();
+    });
+
+    modal.open();
   }
 }
 
-export function createModal(title, content, elementId, tareas) {
-  const modal = new Modal(title, content, elementId, tareas);
+export function createModal(title, content, tareaId, tareas) {
+  const modal = new Modal(title, content, tareaId, tareas);
   modal.open();
 }

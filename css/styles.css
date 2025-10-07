@@ -27,6 +27,7 @@
   font-size: 15px;
   text-align: center;
   margin-top: 2%;
+  margin-bottom: 2%;
 }
 
 #formularioTarea {
@@ -59,6 +60,7 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  margin-bottom: 5%;
 }
 
 .header {
@@ -95,4 +97,11 @@
   .formularioTarea {
     flex: 1 1 100%;
   }
+}
+
+#titulo {
+  text-align: center;
+  margin-top: 2%;
+  line-height: normal;
+  font-size: 80px;
 }

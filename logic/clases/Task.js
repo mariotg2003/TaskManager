@@ -9,7 +9,7 @@ export class Task {
     this.texto = texto;
     this.estimacion = estimacion;
     this.id = Task.contadorTarea++;
-    this.estado = this.estado;
+    this.estado = estado;
   }
 
   crearTextoTarea() {
@@ -73,21 +73,27 @@ export let tareas = {};
 
 // FUNCION PARA AÑADIR TAREA AL CUADRO DE TAREAS NO EMPEZADAS
 export function añadirTarea(tareaNueva) {
+  let estado;
   let divTareas;
   switch (tareaNueva.estado) {
     case "Ready":
+      estado = "Ready";
       divTareas = document.getElementById("tareasNoEmpezadas");
       break;
     case "Dev":
+      estado = "Dev";
       divTareas = document.getElementById("tareasDesarrollo");
       break;
     case "Test":
+      estado = "Test";
       divTareas = document.getElementById("tareasTesting");
       break;
     case "Done":
-      divTareas = document.getElementById("tareasTerminadas");
+      estado = "Done";
+      divTareas = document.getElementById("tareasDone");
       break;
     default:
+      estado = "Ready";
       divTareas = document.getElementById("tareasNoEmpezadas");
       break;
   }
@@ -95,7 +101,7 @@ export function añadirTarea(tareaNueva) {
   let tarea = tareaNueva;
   tarea.estimacion = tarea.estimacion;
   tarea.id = tarea.id;
-  tarea.estado = "Ready";
+  tarea.estado = estado;
 
   let p = tarea.crearTextoTarea();
   let divEstimacion = tarea.crearEstimacion();
@@ -199,14 +205,6 @@ function resetTareas(tareas) {
   }
 }
 
-//FUNCION PARA LEER LAS TAREAS
-function pintarTareas(tareas) {
-  console.log(tareas);
-  for (let key in tareas) {
-    añadirTarea(tareas[key]);
-  }
-}
-
 //FUNCION PARA IMPORTAR LAS TAREAS
 function importarJSON(file, dict) {
   console.log(Object.keys(dict).length);
@@ -222,7 +220,8 @@ function importarJSON(file, dict) {
         for (let key in tareasImportadas) {
           if (
             !tareasImportadas[key].hasOwnProperty("texto") ||
-            !tareasImportadas[key].hasOwnProperty("estimacion")
+            !tareasImportadas[key].hasOwnProperty("estimacion") ||
+            !tareasImportadas[key].hasOwnProperty("estado")
           ) {
             throw new Error("El archivo JSON no tiene el formato correcto.");
           }
@@ -232,7 +231,8 @@ function importarJSON(file, dict) {
       for (let key in tareasImportadas) {
         let tarea = new Task(
           tareasImportadas[key].texto,
-          tareasImportadas[key].estimacion
+          tareasImportadas[key].estimacion,
+          tareasImportadas[key].estado
         );
         tarea.id = Task.contadorTarea++;
         añadirTarea(tarea);
@@ -246,4 +246,37 @@ function importarJSON(file, dict) {
     }
   };
   lector.readAsText(file);
+}
+
+export function borrarTarea(tarea) {
+  delete tareas[tarea.id];
+  document.getElementById(tarea.id).remove();
+}
+
+export function crearTareaModal() {
+  const modal = new tingle.modal({
+    footer: true,
+    stickyFooter: false,
+    closeMethods: ["overlay", "button", "escape"],
+    closeLabel: "Cerrar",
+  });
+  modal.setContent(`
+    <h1>Crear nueva tarea</h1>
+    <div class="form-group
+      <label for="nombreTarea">Nombre de la tarea:</label>
+      <input type="text" class="form-control" id="nombreTarea" placeholder="Introduce el nombre de la tarea">
+    </div>
+    <div class="form-group">
+      <label for="estimacionTarea">Estimación (horas):</label>
+      <input type="text" class="form-control" id="estimacionTarea" placeholder="Introduce la estimación en horas">
+    </div>
+  `);
+  modal.addFooterBtn("Crear Tarea", "tingle-btn tingle-btn--primary", () => {
+    guardarTarea();
+    modal.close();
+  });
+  modal.addFooterBtn("Cerrar", "tingle-btn tingle-btn--default", () => {
+    modal.close();
+  });
+  modal.open();
 }

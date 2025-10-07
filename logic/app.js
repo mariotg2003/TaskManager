@@ -4,13 +4,14 @@ import {
   tareas,
   exportarJSON,
   abrirSelectorArchivo,
+  crearTareaModal,
 } from "./clases/Task.js";
 
 function crearTarea() {
   let boton = document.getElementById("botonCrearTarea");
 
   boton.addEventListener("click", () => {
-    guardarTarea();
+    crearTareaModal();
   });
 }
 
