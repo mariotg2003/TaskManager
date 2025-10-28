@@ -140,7 +140,7 @@ export function guardarTarea() {
   let texto = textoTarea.value;
   let numeroEstimacion = document.getElementById("estimacionTarea");
   let estimacion = numeroEstimacion.value;
-
+  console.log(texto, estimacion);
   if (texto !== "" && estimacion !== "") {
     tarea.texto = texto;
     tarea.estimacion = estimacion;
@@ -151,7 +151,7 @@ export function guardarTarea() {
     textoTarea.value = "";
     numeroEstimacion.value = "";
   } else {
-    alert("Introduce los datos bien por favor");
+    alert("el texto es: ", texto);
   }
 }
 
@@ -274,9 +274,11 @@ export function crearTareaModal() {
   modal.addFooterBtn("Crear Tarea", "tingle-btn tingle-btn--primary", () => {
     guardarTarea();
     modal.close();
+    modal.destroy();
   });
   modal.addFooterBtn("Cerrar", "tingle-btn tingle-btn--default", () => {
     modal.close();
+    modal.destroy();
   });
   modal.open();
 }

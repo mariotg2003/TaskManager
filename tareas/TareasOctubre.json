@@ -1,0 +1,56 @@
+{
+  "1": {
+    "texto": "Aprender React",
+    "estimacion": "ALTA",
+    "id": 1,
+    "estado": "Dev"
+  },
+  "3": {
+    "texto": "Seguir cursos",
+    "estimacion": "ALTA",
+    "id": 3,
+    "estado": "Done"
+  },
+  "5": {
+    "texto": "Avanzar TaskManager 1.0",
+    "estimacion": "ALTA",
+    "id": 5,
+    "estado": "Done"
+  },
+  "7": {
+    "texto": "Mantener Ejercicio",
+    "estimacion": "ALTA",
+    "id": 7,
+    "estado": "Done"
+  },
+  "9": {
+    "texto": "Hacer proyectito Machine Learning",
+    "estimacion": "MEDIO",
+    "id": 9,
+    "estado": "Ready"
+  },
+  "11": {
+    "texto": "Hacer proyecto WebScraping en Python",
+    "estimacion": "MEDIO",
+    "id": 11,
+    "estado": "Ready"
+  },
+  "13": {
+    "texto": "Ordenar Cajon Impresora",
+    "estimacion": "MEDIO",
+    "id": 13,
+    "estado": "Ready"
+  },
+  "15": {
+    "texto": "Limpiar Impresora Resina",
+    "estimacion": "ALTO",
+    "id": 15,
+    "estado": "Done"
+  },
+  "17": {
+    "texto": "Sacar Muñeco Cádiz",
+    "estimacion": "BAJO",
+    "id": 17,
+    "estado": "Ready"
+  }
+}
