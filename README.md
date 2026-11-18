@@ -1,11 +1,12 @@
 # TaskManager
 
-Tablero Kanban (READY → DEV → TEST → DONE) para gestionar las tareas de cada mes. Aplicación React que funciona 100 % en el navegador, sin backend.
+Tablero Kanban (READY → DEV → TEST → DONE) para gestionar las tareas de cada mes. Aplicación React disponible en la web y como aplicación de escritorio con Electron, sin backend.
 
 ## Tecnologías
 
 - **React 18**: componentes funcionales y hooks (`useState`, `useEffect`, `useRef`).
 - **Vite 5** (+ `@vitejs/plugin-react`): servidor de desarrollo y build.
+- **Electron**: ventana de escritorio.
 - **CSS3**: variables CSS, Grid, tema oscuro y diseño responsive.
 - **`<dialog>` nativo**: formulario de crear/editar tarea.
 - **HTML Drag & Drop API**: mover tareas entre columnas.
@@ -14,39 +15,61 @@ Tablero Kanban (READY → DEV → TEST → DONE) para gestionar las tareas de ca
 
 ## Estructura
 
+```text
+index.html                 Punto de entrada de la web
+vite.config.js             Configuración de Vite
+Iniciar TaskManager.vbs    Lanzador de escritorio sin consola
+Iniciar TaskManager.cmd    Lanzador alternativo para Windows
+src/
+  main.jsx                 Arranque de React
+  App.jsx                  Tablero, controles e importación/exportación
+  desktop.cjs              Ventana de Electron
+  components/
+    Column.jsx             Columna del tablero
+    TaskCard.jsx           Tarjeta de tarea
+    TaskDialog.jsx         Diálogo de tarea
+    MonthDialog.jsx        Diálogo de mes
+  hooks/
+    useTareas.js           Estado y persistencia de tareas
+  lib/
+    storage.js             Modelo, normalización y localStorage
+  styles/
+    styles.css             Estilos de la aplicación
+scripts/                   Lanzadores anteriores de la web local
+tareas/                    Ejemplos de JSON mensuales
 ```
-index.html              Punto de entrada de Vite
-vite.config.js
-src/main.jsx            Arranque de React
-src/App.jsx             Cabecera, meses, importar/exportar
-src/Column.jsx          Columna del tablero (zona de drop)
-src/TaskCard.jsx        Tarjeta de tarea (drag, mover, editar, borrar)
-src/TaskDialog.jsx      Diálogo de creación/edición
-src/useTareas.js        Hook de estado + persistencia
-src/storage.js          Modelo, normalización y localStorage
-src/styles.css          Estilos
-tareas/                 Ejemplos de JSON mensuales
-```
+
+Para modificar la interfaz, empieza por `src/App.jsx` o el componente correspondiente en `src/components/`; los estilos están en `src/styles/styles.css`. El estado por mes se gestiona en `src/hooks/useTareas.js` y el formato de los datos en `src/lib/storage.js`. La configuración de la ventana de escritorio está en `src/desktop.cjs`.
 
 ## Pasos para ejecutarlo
 
-1. Instala [Node.js](https://nodejs.org) 18 o superior.
+1. Instala [Node.js](https://nodejs.org) 22.12 o superior.
 2. `npm install`
 3. `npm run dev` y abre la URL que indica (normalmente <http://localhost:5173>).
 4. `npm run build` genera la versión de producción en `dist/` (`npm run preview` para probarla).
 
-## Acceso directo de escritorio (Windows)
+Los comandos web siguen generando la misma versión para publicar. La aplicación de escritorio también utiliza `dist/`, pero con rutas relativas; ejecuta `npm run build` antes de publicar la web.
 
-Ejecuta una vez `powershell -ExecutionPolicy Bypass -File scripts\crear-acceso-directo.ps1`. Se crea `TaskManager.lnk` en el escritorio: arranca un servidor local en el puerto fijo 4173 (para conservar los datos del navegador) y abre la app en una ventana propia con Edge o Chrome (`--app`). Si cambias el código, ejecuta `npm run build` para que el acceso directo use la versión nueva.
+## Aplicación de escritorio (Windows)
 
-El servidor queda en segundo plano al cerrar la ventana; para pararlo, finaliza el proceso `node` que escucha en el puerto 4173.
+1. Clona o descomprime el proyecto en una carpeta permanente.
+2. Desde PowerShell en esa carpeta, ejecuta `npm.cmd install`.
+3. Abre `Iniciar TaskManager.vbs` con doble clic. Compila la interfaz y abre la ventana de Electron sin consola. Cierra la ventana para salir.
+
+Para crear un acceso directo, haz clic derecho en `Iniciar TaskManager.vbs` y elige **Enviar a > Escritorio (crear acceso directo)**. El acceso directo necesita que la carpeta del proyecto y `node_modules` permanezcan en su sitio. `Iniciar TaskManager.cmd` también abre la aplicación, pero puede mostrar brevemente una consola.
+
+También puedes usar `npm.cmd run desktop` desde la terminal. Como en MusicConvert, el lanzador necesita Node.js y las dependencias del proyecto; no genera un instalador independiente. La aplicación funciona sin servidor y sin conexión.
+
+La aplicación de escritorio y cada navegador guardan sus datos por separado: no se sincronizan automáticamente. Para trasladar tareas, exporta el JSON de cada mes desde la versión de origen e impórtalo en el mismo mes de la versión de destino. La importación reemplaza las tareas existentes de ese mes.
+
+El acceso directo anterior (`scripts\crear-acceso-directo.ps1`) sigue disponible y abre la versión web local en Edge o Chrome; no abre Electron y conserva sus propios datos del navegador.
 
 ## Uso
 
 1. Elige o crea un mes (`+ Mes`, formato `AAAA-MM`).
 2. `Añadir tarea`: nombre y prioridad (BAJO / MEDIO / ALTO).
 3. Mueve las tareas arrastrándolas o con ◀ ▶. Edita (✎) o borra (🗑) desde cada tarjeta.
-4. Los cambios se guardan solos en el navegador.
+4. Los cambios se guardan solos en el almacenamiento local de la aplicación o del navegador.
 5. `Exportar JSON` descarga las tareas del mes; `Importar JSON` las carga en el mes seleccionado (reemplazándolas). Acepta el formato antiguo (`tareas/TareasOctubre.json`) y el nuevo (array).
 
 ## Formato JSON

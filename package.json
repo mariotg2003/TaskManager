@@ -3,12 +3,21 @@
   "private": true,
   "version": "2.0.0",
   "type": "module",
+  "main": "src/desktop.cjs",
+  "description": "Tablero Kanban para gestionar tareas por mes",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "desktop:build": "vite build --base=./",
+    "desktop": "npm run desktop:build && electron .",
+    "postinstall": "node node_modules/electron/install.js"
   },
   "dependencies": {
+    "electron": "^45.3.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

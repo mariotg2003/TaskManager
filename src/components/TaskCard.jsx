@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ESTADOS } from "./storage.js";
+import { ESTADOS } from "../lib/storage.js";
 
 export default function TaskCard({ tarea, onMover, onEditar, onBorrar }) {
   const [arrastrando, setArrastrando] = useState(false);
