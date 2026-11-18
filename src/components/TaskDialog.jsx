@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { PRIORIDADES } from "./storage.js";
+import { PRIORIDADES } from "../lib/storage.js";
 
 export default function TaskDialog({ tarea, onGuardar, onCerrar }) {
   const ref = useRef(null);

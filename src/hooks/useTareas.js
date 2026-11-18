@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { cargar, guardar, mesActual } from "./storage.js";
+import { cargar, guardar, mesActual } from "../lib/storage.js";
 
 export function useTareas() {
   const [datos, setDatos] = useState(cargar);

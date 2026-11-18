@@ -1,12 +1,14 @@
 import { useRef, useState } from "react";
-import Column from "./Column.jsx";
-import TaskDialog from "./TaskDialog.jsx";
-import { useTareas } from "./useTareas.js";
-import { ESTADOS, crearTarea, etiquetaMes, normalizarImportacion } from "./storage.js";
+import Column from "./components/Column.jsx";
+import MonthDialog from "./components/MonthDialog.jsx";
+import TaskDialog from "./components/TaskDialog.jsx";
+import { useTareas } from "./hooks/useTareas.js";
+import { ESTADOS, crearTarea, etiquetaMes, normalizarImportacion } from "./lib/storage.js";
 
 export default function App() {
   const { mes, setMes, meses, tareas, crear, editar, borrar, reemplazar } = useTareas();
   const [dialogo, setDialogo] = useState(null); // null | { tarea }
+  const [dialogoMes, setDialogoMes] = useState(false);
   const [aviso, setAviso] = useState("");
   const inputArchivo = useRef(null);
   const temporizador = useRef();
@@ -28,11 +30,9 @@ export default function App() {
     setDialogo(null);
   };
 
-  const nuevoMes = () => {
-    const valor = prompt("Mes a crear (formato AAAA-MM, p. ej. 2025-11):", mes);
-    if (!valor) return;
-    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(valor)) return toast("Formato de mes no válido");
+  const nuevoMes = (valor) => {
     setMes(valor);
+    setDialogoMes(false);
   };
 
   const exportar = () => {
@@ -72,7 +72,7 @@ export default function App() {
               </option>
             ))}
           </select>
-          <button className="btn" onClick={nuevoMes}>+ Mes</button>
+          <button className="btn" onClick={() => setDialogoMes(true)}>+ Mes</button>
           <button className="btn primario" onClick={() => setDialogo({ tarea: null })}>
             Añadir tarea
           </button>
@@ -105,6 +105,9 @@ export default function App() {
           onGuardar={guardarDialogo}
           onCerrar={() => setDialogo(null)}
         />
+      )}
+      {dialogoMes && (
+        <MonthDialog mes={mes} onGuardar={nuevoMes} onCerrar={() => setDialogoMes(false)} />
       )}
       <div id="toast" role="status" className={aviso ? "visible" : ""}>{aviso}</div>
     </>
