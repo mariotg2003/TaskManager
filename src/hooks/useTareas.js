@@ -1,25 +1,41 @@
-import { useEffect, useState } from "react";
+import { useRef, useState } from "react";
 import { cargar, guardar, mesActual } from "../lib/storage.js";
 
 export function useTareas() {
-  const [datos, setDatos] = useState(cargar);
+  const [inicial] = useState(() => {
+    try { return { datos: cargar(), error: "" }; }
+    catch (error) { return { datos: null, error: `No se pudieron cargar las tareas: ${String(error)}` }; }
+  });
+  const [datos, setDatos] = useState(inicial.datos);
+  const datosRef = useRef(inicial.datos);
   const [mes, setMes] = useState(mesActual);
+  const [errorAlGuardar, setErrorAlGuardar] = useState("");
 
-  useEffect(() => guardar(datos), [datos]);
+  const actualizarMes = (fn) => {
+    try {
+      const current = datosRef.current;
+      if (!current) throw new Error("Las tareas no están disponibles.");
+      const next = { ...current, meses: { ...current.meses, [mes]: fn(current.meses[mes] ?? []) } };
+      guardar(next);
+      datosRef.current = next;
+      setDatos(next);
+      setErrorAlGuardar("");
+      return true;
+    } catch (error) {
+      setErrorAlGuardar(`No se pudieron guardar las tareas: ${String(error)}. El cambio no se ha aplicado.`);
+      return false;
+    }
+  };
 
-  const tareas = datos.meses[mes] ?? [];
-
-  const actualizarMes = (fn) =>
-    setDatos((d) => ({
-      ...d,
-      meses: { ...d.meses, [mes]: fn(d.meses[mes] ?? []) },
-    }));
+  const tareas = datos?.meses[mes] ?? [];
 
   return {
     mes,
     setMes,
     tareas,
-    meses: [...new Set([...Object.keys(datos.meses), mesActual(), mes])].sort().reverse(),
+    errorAlGuardar,
+    errorAlCargar: inicial.error,
+    meses: [...new Set([...Object.keys(datos?.meses ?? {}), mesActual(), mes])].sort().reverse(),
     crear: (tarea) => actualizarMes((l) => [...l, tarea]),
     editar: (id, cambios) =>
       actualizarMes((l) => l.map((t) => (t.id === id ? { ...t, ...cambios } : t))),

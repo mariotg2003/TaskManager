@@ -1,7 +1,27 @@
-const { app, BrowserWindow, dialog } = require("electron");
+const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const path = require("node:path");
+const documents = require("./lib/sync-documents.cjs");
 
 let ventana;
+
+function documentPath() {
+  if (!process.env.LOCALAPPDATA) throw new Error("No se encontró la carpeta de datos locales.");
+  return path.join(process.env.LOCALAPPDATA, "WorkPanel", "sync-documents.sqlite3");
+}
+
+for (const [channel, operation] of [
+  ["tasks:read", () => documents.read(documentPath(), "tasks")],
+  ["tasks:write", (expected, data) => documents.write(documentPath(), "tasks", expected, data)],
+]) {
+  ipcMain.on(channel, (event, ...args) => {
+    try {
+      if (!ventana || event.sender !== ventana.webContents) throw new Error("Solicitud no autorizada.");
+      event.returnValue = { value: operation(...args) };
+    } catch (error) {
+      event.returnValue = { error: String(error) };
+    }
+  });
+}
 
 function crearVentana() {
   ventana = new BrowserWindow({
@@ -12,6 +32,7 @@ function crearVentana() {
     title: "TaskManager",
     autoHideMenuBar: true,
     webPreferences: {
+      preload: path.join(__dirname, "preload.cjs"),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,

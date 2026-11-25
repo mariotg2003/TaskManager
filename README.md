@@ -10,7 +10,7 @@ Tablero Kanban (READY → DEV → TEST → DONE) para gestionar las tareas de ca
 - **CSS3**: variables CSS, Grid, tema oscuro y diseño responsive.
 - **`<dialog>` nativo**: formulario de crear/editar tarea.
 - **HTML Drag & Drop API**: mover tareas entre columnas.
-- **localStorage**: persistencia automática, agrupada por mes.
+- **Almacenamiento local**: persistencia automática, agrupada por mes.
 - **JSON**: importar/exportar las tareas de un mes.
 
 ## Estructura
@@ -32,7 +32,8 @@ src/
   hooks/
     useTareas.js           Estado y persistencia de tareas
   lib/
-    storage.js             Modelo, normalización y localStorage
+    storage.js             Modelo, normalización y persistencia
+    sync-documents.cjs     Almacenamiento compartido del escritorio
   styles/
     styles.css             Estilos de la aplicación
 scripts/                   Lanzadores anteriores de la web local
@@ -60,7 +61,9 @@ Para crear un acceso directo, haz clic derecho en `Iniciar TaskManager.vbs` y el
 
 También puedes usar `npm.cmd run desktop` desde la terminal. Como en MusicConvert, el lanzador necesita Node.js y las dependencias del proyecto; no genera un instalador independiente. La aplicación funciona sin servidor y sin conexión.
 
-La aplicación de escritorio y cada navegador guardan sus datos por separado: no se sincronizan automáticamente. Para trasladar tareas, exporta el JSON de cada mes desde la versión de origen e impórtalo en el mismo mes de la versión de destino. La importación reemplaza las tareas existentes de ese mes.
+La aplicación de escritorio guarda sus tareas en `%LOCALAPPDATA%\WorkPanel\sync-documents.sqlite3`; los navegadores utilizan su propio `localStorage`. Al abrir esta versión de escritorio por primera vez, migra automáticamente las tareas anteriores y conserva la copia original. No sigas usando versiones antiguas de TaskManager tras migrar, ya que modificarían esa copia antigua.
+
+WorkPanel permite sincronizar las tareas del escritorio con Android de forma manual y experimental. Si TaskManager estaba abierto durante una importación, ciérralo y vuelve a abrirlo para ver los cambios; se rechazan guardados basados en datos antiguos. Las eliminaciones no se propagan. La web y el escritorio siguen guardando sus datos por separado: también puedes trasladar tareas exportando e importando el JSON de cada mes, operación que reemplaza el mes de destino.
 
 El acceso directo anterior (`scripts\crear-acceso-directo.ps1`) sigue disponible y abre la versión web local en Edge o Chrome; no abre Electron y conserva sus propios datos del navegador.
 
