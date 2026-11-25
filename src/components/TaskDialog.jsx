@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { PRIORIDADES } from "../lib/storage.js";
 
-export default function TaskDialog({ tarea, onGuardar, onCerrar }) {
+export default function TaskDialog({ tarea, onGuardar, onCerrar, error }) {
   const ref = useRef(null);
   const [texto, setTexto] = useState(tarea?.texto ?? "");
   const [estimacion, setEstimacion] = useState(tarea?.estimacion ?? "MEDIO");
@@ -39,6 +39,7 @@ export default function TaskDialog({ tarea, onGuardar, onCerrar }) {
             ))}
           </select>
         </label>
+        {error && <p role="alert">{error}</p>}
         <div className="dialogo-acciones">
           <button type="button" className="btn" onClick={() => ref.current.close()}>
             Cancelar
